@@ -20,6 +20,7 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'foto'
     ];
 
     /**
@@ -44,4 +45,11 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
+
+    public function getFotoUrlAttribute()
+{
+    return $this->foto 
+        ? asset($this->foto) 
+        : asset('storage/default-avatar.png');
+}
 }

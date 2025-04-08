@@ -32,5 +32,19 @@
                 {{ $slot }}
             </main>
         </div>
+        <script>
+            document.addEventListener('livewire:load', () => {
+                scrollToBottom();
+        
+                Livewire.hook('message.processed', () => {
+                    scrollToBottom();
+                });
+        
+                function scrollToBottom() {
+                    const container = document.getElementById('chat-container');
+                    container.scrollTop = container.scrollHeight;
+                }
+            });
+        </script>
     </body>
 </html>

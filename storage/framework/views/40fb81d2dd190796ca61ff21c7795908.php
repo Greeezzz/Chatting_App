@@ -55,7 +55,10 @@
     <div class="flex justify-center items-center h-screen">
         <div class="card bg-white rounded-lg p-8 shadow-lg">
             <h1 class="title text-4xl font-bold mb-8">Welcome</h1>
-            <a href="<?php echo e(route('login')); ?>" class="button hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-full mb-8 inline-block">Login</a>
+            <div class="flex space-x-4 mb-8">
+                <a href="<?php echo e(route('login')); ?>" class="button hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-full">Login</a>
+                <a href="<?php echo e(route('register')); ?>" class="button hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-full">Register</a>
+            </div>
             <div class="flex items-center">
                 <div class="avatar">
                     <img src="https://i.pinimg.com/736x/f0/36/09/f03609250d0ee1c57aa2c0a70be2e618.jpg" alt="Chelo">

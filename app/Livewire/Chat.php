@@ -5,12 +5,16 @@ namespace App\Livewire;
 use Livewire\Component;
 use App\Models\User;
 use App\Models\Pribadi;
+use Livewire\WithFileUploads;
+use Illuminate\Support\Str;
 
 class Chat extends Component
 {
-    public $tujuan_id, $tujuan_nama, $pesan;
+    use WithFileUploads;
+    public $tujuan_id, $tujuan_nama, $pesan, $is_typing = false, $typingTimer, $penerima_id = null, $fotoProfil, $obrolan, $filePesan, $editPesanId;
     public function pilihtujuan($id)
     {
+        $this->penerima_id = $id;
         $tujuan = User::find($id);
         $this->tujuan_id = $tujuan->id;
         $this->tujuan_nama = $tujuan->name;
@@ -18,45 +22,73 @@ class Chat extends Component
         Pribadi::where('user_id', $this->tujuan_id)
                 ->where('tujuan_id', auth()->id())
                 ->update(['status' => 1]);
+        $this->loadChat();
     }
     public function kirimpesan()
     {
-        $this->validate([
-            'pesan' => 'required'
-        ]);
+        $filePath = null;
+        if ($this->filePesan) {
+            $filename = time() . '_' . $this->filePesan->getClientOriginalName();
+            $filePath = $this->filePesan->storeAs('public/chat-files', $filename);
+        }
 
-        Pribadi::create([
-            'user_id' => auth()->id(),
-            'tujuan_id' => $this->tujuan_id,
-            'pesan' => $this->pesan,
-            'status' => 0
-        ]);
-
-        $this->pesan = '';
+        if ($this->pesan && $this->tujuan_id) {
+            Pribadi::create([
+                'user_id' => auth()->id(),
+                'tujuan_id' => $this->tujuan_id,
+                'pesan' => $this->pesan,
+                'file' => $filePath ? str_replace('public/', '', $filePath) : null,
+            ]);
+            $this->reset('pesan', 'filePesan');
+            $this->loadChat();
+        }
     }
+
     public function render()
     {
         $member = User::where('id', '!=', auth()->id())->get();
         $memberunread = [];
+    
         foreach ($member as $m) {
-            $belumbaca = Pribadi::where('user_id', $m -> id)
-                                    ->where('tujuan_id', auth()->id())
-                                    ->where('status', 0)
-                                    ->count();
+            $belumbaca = Pribadi::where('user_id', $m->id)
+                ->where('tujuan_id', auth()->id())
+                ->where('status', 0)
+                ->count();
             $memberunread[$m->id]['unread'] = $belumbaca;
             $memberunread[$m->id]['user'] = $m;
         }
-
-        $obrolan = Pribadi::where('user_id', auth()->id())
-                            ->where('tujuan_id', $this->tujuan_id)
-                            ->orWhere('user_id', $this->tujuan_id)
-                            ->where('tujuan_id', auth()->id())
-                            ->orderBy('created_at', 'desc')
-                            ->get();
-
+    
+        // Ini biar polling selalu update obrolan terbaru
+        if ($this->tujuan_id) {
+            $this->loadChat();
+        }
+    
         return view('livewire.chat')->with([
             'memberunread' => $memberunread,
-            'obrolan' => $obrolan ?? null
+            'obrolan' => $this->obrolan
         ]);
     }
+
+    public function loadChat()
+    {
+        $this->obrolan = Pribadi::where(function ($q) {
+            $q->where('user_id', auth()->id())->where('tujuan_id', $this->tujuan_id);
+        })->orWhere(function ($q) {
+            $q->where('user_id', $this->tujuan_id)->where('tujuan_id', auth()->id());
+        })->with('user')->orderBy('created_at', 'asc')->get();        
+    }
+
+    public function gantiFoto()
+    {
+        if ($this->fotoProfil) {
+            $filename = auth()->id() . '_' . time() . '.' . $this->fotoProfil->getClientOriginalExtension();
+            $this->fotoProfil->storeAs('public/avatars', $filename);
+
+            auth()->user()->update(['foto' => $filename]);
+
+            session()->flash('success', 'Foto profil berhasil diubah.');
+            $this->reset('fotoProfil'); // reset inputnya
+        }
+    }
+
 }

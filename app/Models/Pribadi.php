@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Pribadi extends Model
 {
-    protected $fillable = ['user_id', 'tujuan_id', 'pesan', 'status'];
+    protected $fillable = ['user_id', 'tujuan_id', 'pesan', 'status', 'file'];
     use HasFactory;
     public function user()
     {
