@@ -7,6 +7,7 @@ use App\Models\User;
 use App\Models\Pribadi;
 use Livewire\WithFileUploads;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Storage;
 
 class Chat extends Component
 {
@@ -20,8 +21,8 @@ class Chat extends Component
         $this->tujuan_nama = $tujuan->name;
         $this->pesan = '';
         Pribadi::where('user_id', $this->tujuan_id)
-                ->where('tujuan_id', auth()->id())
-                ->update(['status' => 1]);
+            ->where('tujuan_id', auth()->id())
+            ->update(['status' => 1]);
         $this->loadChat();
     }
     public function kirimpesan()
@@ -48,7 +49,7 @@ class Chat extends Component
     {
         $member = User::where('id', '!=', auth()->id())->get();
         $memberunread = [];
-    
+
         foreach ($member as $m) {
             $belumbaca = Pribadi::where('user_id', $m->id)
                 ->where('tujuan_id', auth()->id())
@@ -57,12 +58,12 @@ class Chat extends Component
             $memberunread[$m->id]['unread'] = $belumbaca;
             $memberunread[$m->id]['user'] = $m;
         }
-    
+
         // Ini biar polling selalu update obrolan terbaru
         if ($this->tujuan_id) {
             $this->loadChat();
         }
-    
+
         return view('livewire.chat')->with([
             'memberunread' => $memberunread,
             'obrolan' => $this->obrolan
@@ -75,20 +76,29 @@ class Chat extends Component
             $q->where('user_id', auth()->id())->where('tujuan_id', $this->tujuan_id);
         })->orWhere(function ($q) {
             $q->where('user_id', $this->tujuan_id)->where('tujuan_id', auth()->id());
-        })->with('user')->orderBy('created_at', 'asc')->get();        
+        })->with('user')->orderBy('created_at', 'asc')->get();
     }
 
     public function gantiFoto()
     {
-        if ($this->fotoProfil) {
-            $filename = auth()->id() . '_' . time() . '.' . $this->fotoProfil->getClientOriginalExtension();
-            $this->fotoProfil->storeAs('public/avatars', $filename);
+        $this->validate([
+            'fotoProfil' => 'image|max:2048', // max 2MB
+        ]);
 
-            auth()->user()->update(['foto' => $filename]);
-
-            session()->flash('success', 'Foto profil berhasil diubah.');
-            $this->reset('fotoProfil'); // reset inputnya
+        // Hapus foto lama kalau ada
+        if (auth()->user()->foto) {
+            Storage::disk('public')->delete('avatars/' . auth()->user()->foto);
         }
-    }
 
+        // Simpan foto baru
+        $namaFile = uniqid() . '.' . $this->fotoProfil->getClientOriginalExtension();
+        $this->fotoProfil->storeAs('public/avatars', $namaFile);
+
+        // Simpan ke database
+        auth()->user()->update([
+            'foto' => $namaFile,
+        ]);
+
+        session()->flash('success', 'Foto profil berhasil diperbarui.');
+    }
 }

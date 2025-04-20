@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<ufs-config version="2.0">
+  <hpbtw-config-64g>
+    <enable>1</enable>
+    <tw-size-gb>4</tw-size-gb>
+     <hpb-size-gb>0</hpb-size-gb>
+  </hpbtw-config-64g>
+
+  <hpbtw-config-128g>
+    <enable>1</enable>
+    <tw-size-gb>8</tw-size-gb>
+     <hpb-size-gb>0</hpb-size-gb>
+  </hpbtw-config-128g>
+
+  <hpbtw-config-256g>
+    <enable>1</enable>
+    <tw-size-gb>16</tw-size-gb>
+     <hpb-size-gb>0</hpb-size-gb>
+  </hpbtw-config-256g>
+
+  <hpbtw-config-512g>
+    <enable>1</enable>
+    <tw-size-gb>32</tw-size-gb>
+     <hpb-size-gb>0</hpb-size-gb>
+  </hpbtw-config-512g>
+
+</ufs-config>
+

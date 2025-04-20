@@ -7,14 +7,15 @@
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
     <style>
         .avatar {
-            width: 90px;
-            height: 90px;
+            width: 100px;
+            height: 100px;
             border-radius: 50%;
-            margin-right: 16px;
             overflow: hidden;
             display: flex;
             justify-content: center;
             align-items: center;
+            border: 3px solid #6b7280;
+            box-shadow: 0 0 15px rgba(255, 255, 255, 0.1);
         }
 
         .avatar img {
@@ -23,65 +24,26 @@
             object-fit: cover;
             border-radius: 50%;
         }
-
-        .card {
-            background-color: #e0f7f7;
-            transition: transform 0.3s ease, background-color 0.3s ease;
-        }
-
-        .card:hover {
-            transform: scale(1.05);
-            background-color: #b2eaea;
-        }
-
-        .title {
-            color: #007f7f;
-        }
-
-        .button {
-            background-color: #007f7f;
-        }
-
-        .button:hover {
-            background-color: #006666;
-        }
-
-        .text {
-            color: #005f5f;
-        }
     </style>
 </head>
-<body class="bg-cyan-600">
+<body class="bg-gray-900 text-gray-100">
     <div class="flex justify-center items-center h-screen">
-        <div class="card bg-white rounded-lg p-8 shadow-lg">
-            <h1 class="title text-4xl font-bold mb-8">Welcome</h1>
-            <div class="flex space-x-4 mb-8">
-                <a href="{{ route('login') }}" class="button hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-full">Login</a>
-                <a href="{{ route('register') }}" class="button hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-full">Register</a>
+        <div class="bg-gray-800 rounded-2xl p-8 shadow-2xl transition-transform transform hover:scale-105 w-full max-w-md border border-gray-700">
+            <h1 class="text-4xl font-bold text-center text-white mb-6">Welcome</h1>
+            
+            <div class="flex justify-center space-x-4 mb-8">
+                <a href="{{ route('login') }}" class="bg-gray-700 hover:bg-gray-600 text-white font-semibold py-2 px-6 rounded-full transition duration-300">Login</a>
+                <a href="{{ route('register') }}" class="bg-gray-700 hover:bg-gray-600 text-white font-semibold py-2 px-6 rounded-full transition duration-300">Register</a>
             </div>
-            <div class="flex items-center">
-                <div class="avatar">
-                    <img src="https://i.pinimg.com/736x/f0/36/09/f03609250d0ee1c57aa2c0a70be2e618.jpg" alt="Chelo">
+
+            <div class="flex flex-col items-center text-center">
+                <div class="avatar mb-4">
+                    <img src="https://i.pinimg.com/474x/70/18/c0/7018c0e8825584d52f3b4bf1d3ab1e0d.jpg" alt="Chelo">
                 </div>
-                <div>
-                    <h2 class="title text-2xl font-bold">Creator 1</h2>
-                    <p class="text text-gray-600">Name: Chelo Arung Samudro</p>
-                    <p class="text text-gray-600">WhatsApp: 083875095310</p>
-                    <p class="text text-gray-600">Class: XI A</p>
-                    <p class="text text-gray-600">TikTok: @reezzznt</p>
-                </div>
-            </div>
-            <div class="flex items-center mt-8">
-                <div class="avatar">
-                    <img src="https://i.pinimg.com/736x/38/cc/46/38cc4640083a4a6be408081de15b9457.jpg" alt="Dewi">
-                </div>
-                <div>
-                    <h2 class="title text-2xl font-bold">Creator 2</h2>
-                    <p class="text text-gray-600">Name: Tri Buana Tunggal Dewi</p>
-                    <p class="text text-gray-600">WhatsApp: 085822488542</p>
-                    <p class="text text-gray-600">Class: XI A</p>
-                    <p class="text text-gray-600">TikTok: @yukimorigl</p>
-                </div>
+                <h2 class="text-2xl font-bold text-white">Chelo Arung Samudro</h2>
+                <p class="text-gray-400">WhatsApp: 083875095310</p>
+                <p class="text-gray-400">Class: XI A</p>
+                <p class="text-gray-400">TikTok: @reezzznt</p>
             </div>
         </div>
     </div>
